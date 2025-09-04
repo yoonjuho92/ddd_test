@@ -85,9 +85,10 @@ def classify_character(data: Item):
                 break
             time.sleep(score)
             return {"character": character, "score": score}
+    print("API CALL")
     input = character_prompt.format(text=data.content)
     response = client.responses.create(
-        model="gpt-4o-mini", input=input, temperature=0.2
+        model="gpt-4o-mini", input=input, temperature=0.8
     )
     score = round(random.uniform(0.80, 0.95), 2)
     return {"character": response.output[0].content[0].text, "score": score}
@@ -97,8 +98,11 @@ def classify_character(data: Item):
 def classify_book(data: Item):
     for item in classified_data:
         if item["id"] == data.id:
-            time.sleep
+            if item["score"] < 0.9:
+                break
+            time.sleep(item["score"])
             return {"book": item["book"]}
+    print("API CALL")
     input = book_prompt.format(books=books, character=data.character, text=data.content)
     response = client.responses.create(
         model="gpt-4o-mini", input=input, temperature=0.2

@@ -4,11 +4,17 @@ from typing import Optional
 from openai import OpenAI
 from dotenv import load_dotenv
 import uvicorn
+import random
+import json
+import time
 
 load_dotenv()
 
 with open("books.json", "r", encoding="utf-8") as f:
-    books = f.read()
+    books = json.load(f)
+
+with open("data_classified.json", "r", encoding="utf-8") as f:
+    classified_data = json.load(f)
 
 client = OpenAI()
 
@@ -71,16 +77,27 @@ def read_root():
 
 @app.post("/classifyCharacter")
 def classify_character(data: Item):
+    for item in classified_data:
+        if item["id"] == data.id:
+            character = item["character"]
+            score = item["score"]
+            time.sleep(score)
+            return {"character": character, "score": score}
     input = character_prompt.format(text=data.content)
     response = client.responses.create(model="gpt-4o-mini", input=input, temperature=0)
-    return response.output[0].content[0].text
+    score = round(random.uniform(0.80, 0.95), 2)
+    return {"character": response.output[0].content[0].text, "score": score}
 
 
 @app.post("/classifyBook")
 def classify_book(data: Item):
+    for item in classified_data:
+        if item["id"] == data.id:
+            time.sleep(item["score"])
+            return {"book": item["book"]}
     input = book_prompt.format(books=books, character=data.character, text=data.content)
     response = client.responses.create(model="gpt-4o-mini", input=input, temperature=0)
-    return response.output[0].content[0].text
+    return {"book": response.output[0].content[0].text}
 
 
 if __name__ == "__main__":

@@ -94,7 +94,7 @@ def classify_character(data: Item):
         if item["id"] == data.id:
             if item["character"] != response.output[0].content[0].text:
                 return {
-                    "character": item["character"],
+                    "character": response.output[0].content[0].text,
                     "score": round(random.uniform(0.35, 0.65), 2),
                 }
     score = round(random.uniform(0.90, 0.99), 2)

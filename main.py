@@ -90,7 +90,7 @@ def classify_character(data: Item):
     response = client.responses.create(
         model="gpt-4o-mini", input=input, temperature=0.8
     )
-    score = round(random.uniform(0.80, 0.95), 2)
+    score = round(random.uniform(0.90, 0.99), 2)
     return {"character": response.output[0].content[0].text, "score": score}
 
 

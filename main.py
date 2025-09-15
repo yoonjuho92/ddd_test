@@ -88,7 +88,7 @@ def classify_character(data: Item):
     print("API CALL")
     input = character_prompt.format(text=data.content)
     response = client.responses.create(
-        model="gpt-4o-mini", input=input, temperature=0.8
+        model="gpt-4o-mini", input=input, temperature=0.2
     )
     for item in classified_data:
         if item["id"] == data.id:
